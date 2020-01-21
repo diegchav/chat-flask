@@ -89,8 +89,9 @@ def login_required(view):
 @login_required
 def index():
     """Home page."""
+    user = g.user
     messages = [message.json() for message in Message.query.limit(50).all()]
-    return render_template('index.html', messages=messages)
+    return render_template('index.html', username=user.username, messages=messages)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -145,6 +146,11 @@ def register():
         return redirect(url_for('index'))
 
     return render_template('register.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 def is_float(num):
     if isinstance(num, str):
