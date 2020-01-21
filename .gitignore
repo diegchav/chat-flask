@@ -1,0 +1,13 @@
+*.DS_*
+  
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+
+# Compiled files
+*.pyc
+
+venv
