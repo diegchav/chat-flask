@@ -3,5 +3,18 @@
 {% block title %}Chat App{% endblock %}
 
 {% block content %}
-    Chat App
+    <div class="chat-area">
+        <div id="messages" class="chat-area__messages"></div>
+        <div class="chat-area__input">
+            <form id="send-message" class="container">
+                <div class="input-group">
+                    <input type="text" name="message" class="form-control" placeholder="Message" aria-label="Message"
+                           autocomplete="off" autofocus="true" required="true">
+                    <div class="input-group-append">
+                        <button class="btn btn-dark" type="submit">Send</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}
