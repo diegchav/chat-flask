@@ -68,13 +68,35 @@ const sendMessage = (message) => {
     });
 };
 
+/*
+* Send stock message to bot.
+* @param {string} message - Stock code.
+*/
+const sendStockMessage = (message) => {
+    socket.emit('stock message', message);
+};
+
 // Listeners.
 if ($sendMessage !== undefined) {
     $sendMessage.addEventListener('submit', (e) => {
         e.preventDefault();
 
+        // Stock message regex.
+        const stockRegex = /^(\/)([a-z]+)(=)?(.*)?$/;
+        
         const message = e.target.elements.message.value;
-        sendMessage(message);
+        const match = message.match(stockRegex);
+        if (match) {
+            const command = match[2];
+            if (command !== undefined && command === 'stock') {
+                const stockCode = match[4];
+                if (stockCode != undefined) {
+                    sendStockMessage(stockCode);
+                }
+            }
+        } else {
+            sendMessage(message);
+        }
 
         // Clear send message input.
         $sendMessageInput.value = '';

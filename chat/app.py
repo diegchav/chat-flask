@@ -1,5 +1,6 @@
 import functools
 import os
+import requests
 from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, flash, g, redirect, render_template, request, session, url_for
@@ -145,6 +146,16 @@ def register():
 
     return render_template('register.html')
 
+def is_float(num):
+    if isinstance(num, str):
+        try:
+            f = float(num)
+            return True
+        except ValueError:
+            return False
+
+    return False
+
 ### WebSocket events ###
 @socketio.on('message')
 def handle_message(message):
@@ -158,6 +169,24 @@ def handle_message(message):
         message_json = new_message.json()
         message_json['time'] = new_message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
         emit('message received', message_json, broadcast=True)
+
+@socketio.on('stock message')
+def handle_stock_message(stock_code):
+    stock_url = 'https://stooq.com/q/l/?s={}&f=sd2t2ohlcv&h&e=csv'.format(stock_code.strip().lower())
+    r = requests.get(stock_url)
+
+    # Parse csv response
+    csv_text = r.text
+    csv_rows = csv_text.splitlines()
+    csv_values = csv_rows[1].split(',')
+    stock_symbol = csv_values[0]
+    stock_close = csv_values[6]
+
+    if is_float(stock_close):
+        message_text = '{} quote is ${} per share.'.format(stock_symbol, stock_close)
+        message_user = 'Bot'
+        message_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        emit('message received', { 'text': message_text, 'user': message_user, 'time': message_time }, broadcast=True)
 
 if __name__ == "__main__":
     socketio.run(app)
