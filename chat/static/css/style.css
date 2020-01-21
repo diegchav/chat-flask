@@ -71,3 +71,16 @@ p {
 .message__text {
     margin-top: 0.4rem;
 }
+
+/* Login */
+#login {
+    text-align: center;
+}
+
+#login .form-group {
+    margin: 1rem 0;
+}
+
+.register-link {
+    font-size: 0.8rem;
+}
