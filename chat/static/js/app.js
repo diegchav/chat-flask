@@ -1,3 +1,7 @@
+// Connect to web socket.
+const hostname = `${window.location.protocol}//${document.domain}:${window.location.port}`;
+const socket = io.connect(hostname);
+
 // DOM elements.
 const $sendMessage = document.getElementById('send-message') || undefined;
 const $sendMessageInput = $sendMessage && document.querySelector('input');
@@ -31,7 +35,7 @@ const autoscroll = (pageLoad = false) => {
 
     const scrollOffset = $messages.scrollTop + visibleHeight;
 
-    if ((containerHeight - newMessageHeight) <= scrollOffset) {
+    if (containerHeight - newMessageHeight <= scrollOffset) {
         $messages.scrollTop = $messages.scrollHeight;
     }
 };
@@ -44,10 +48,24 @@ const renderMessage = (message) => {
     // Message template.
     const messageTemplate = document.getElementById('message-template').innerHTML || undefined;
 
-    const html = Mustache.render(messageTemplate, { message });
+    const html = Mustache.render(messageTemplate, message);
 
     $messages.insertAdjacentHTML('beforeend', html);
     autoscroll();
+};
+
+/*
+* Send a message to the chat.
+* @param {string} message - Message to be sent.
+*/
+const sendMessage = (message) => {
+    // Disable send button while sending the message.
+    $sendMessageButton.setAttribute('disabled', 'disabled');
+
+    socket.emit('message', message, () => {
+        // Enable send button.
+        $sendMessageButton.removeAttribute('disabled');
+    });
 };
 
 // Listeners.
@@ -56,7 +74,7 @@ if ($sendMessage !== undefined) {
         e.preventDefault();
 
         const message = e.target.elements.message.value;
-        renderMessage(message);
+        sendMessage(message);
 
         // Clear send message input.
         $sendMessageInput.value = '';
@@ -66,3 +84,8 @@ if ($sendMessage !== undefined) {
     // Go to the last message in history.
     autoscroll(true);
 }
+
+// WebSocket events.
+socket.on('message received', (message) => {
+    renderMessage({ ...message, time: moment(message.time).calendar() });
+});

@@ -1,7 +1,10 @@
 import functools
 import os
+from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, flash, g, redirect, render_template, request, session, url_for
+from flask_moment import Moment
+from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -14,6 +17,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+moment = Moment(app)
+
+socketio = SocketIO(app)
 
 ### Models ###
 class User(db.Model):
@@ -29,6 +36,32 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+class Message(db.Model):
+    __tablename__ = 'messages'
+
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.String(), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship('User', backref='messages')
+
+    def __init__(self, message, user_id):
+        self.message = message.strip()
+        self.user_id = user_id
+        self.timestamp = datetime.now()
+
+    def __repr__(self):
+        return '<Message %r>' % self.message
+
+    def json(self):
+        message_json = {
+            'text': self.message,
+            'user': self.user.username,
+            'time': moment.create(self.timestamp).calendar()
+        }
+        print(message_json)
+        return message_json
 
 ### Routes ###
 @app.before_request
@@ -55,7 +88,8 @@ def login_required(view):
 @login_required
 def index():
     """Home page."""
-    return render_template('index.html')
+    messages = [message.json() for message in Message.query.limit(50).all()]
+    return render_template('index.html', messages=messages)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -111,5 +145,19 @@ def register():
 
     return render_template('register.html')
 
+### WebSocket events ###
+@socketio.on('message')
+def handle_message(message):
+    user_id = session.get('user_id')
+    user = User.query.filter_by(id=user_id).first()
+    if user:
+        new_message = Message(message=message, user_id=user.id)
+        db.session.add(new_message)
+        db.session.commit()
+        
+        message_json = new_message.json()
+        message_json['time'] = new_message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+        emit('message received', message_json, broadcast=True)
+
 if __name__ == "__main__":
-    app.run()
+    socketio.run(app)

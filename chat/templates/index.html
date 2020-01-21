@@ -4,7 +4,17 @@
 
 {% block content %}
     <div class="chat-area">
-        <div id="messages" class="chat-area__messages"></div>
+        <div id="messages" class="chat-area__messages">
+            {% for message in messages %}
+                <div class="message">
+                    <p>
+                        <span class="message__user">{{message.user}}</span>
+                        <span class="message__time">{{message.time}}</span>
+                    </p>
+                    <p class="message__text">{{message.text}}</p>
+                </div>
+            {% endfor %}
+        </div>
         <div class="chat-area__input">
             <form id="send-message" class="container">
                 <div class="input-group">
@@ -22,7 +32,11 @@
     <script id="message-template" type="text/html">
         <div class="message">
             {% raw %}
-            <p class="message__text">{{message}}</p>
+            <p>
+                <span class="message__user">{{user}}</span>
+                <span class="message__time">{{time}}</span>
+            </p>
+            <p class="message__text">{{text}}</p>
             {% endraw %}
         </div>
     </script>

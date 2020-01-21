@@ -68,6 +68,18 @@ p {
     padding: 0.5rem 0.8rem;
 }
 
+.message__user {
+    color: #222831;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.message__time {
+    color: #222831;
+    font-size: 0.7rem;
+    margin-left: 0.4rem;
+}
+
 .message__text {
     margin-top: 0.4rem;
 }
