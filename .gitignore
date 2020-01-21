@@ -11,3 +11,6 @@ eggs
 *.pyc
 
 venv
+
+# Env files
+.env
