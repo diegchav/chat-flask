@@ -13,6 +13,7 @@ Clone repo:
 
 ```
 git clone https://github.com/diegchav/chat-flask.git
+cd chat-flask
 ```
 
 Create virtualenv and activate:
