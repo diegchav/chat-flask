@@ -12,6 +12,12 @@ body {
     background-color: #ddd;
 }
 
+/* Bootstrap overriden styles */
+p {
+    margin: 0;
+    padding: 0;
+}
+
 /* Main content */
 .content {
     width: 100vw;
@@ -44,4 +50,13 @@ body {
     align-items: center;
     justify-content: center;
     background-color: #eee;
+}
+
+.message {
+    border-bottom: 1px solid #ccc;
+    padding: 0.5rem 0.8rem;
+}
+
+.message__text {
+    margin-top: 0.4rem;
 }

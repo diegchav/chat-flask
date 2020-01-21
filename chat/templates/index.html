@@ -17,4 +17,13 @@
             </form>
         </div>
     </div>
+
+    <!-- Mustache templates -->
+    <script id="message-template" type="text/html">
+        <div class="message">
+            {% raw %}
+            <p class="message__text">{{message}}</p>
+            {% endraw %}
+        </div>
+    </script>
 {% endblock %}
