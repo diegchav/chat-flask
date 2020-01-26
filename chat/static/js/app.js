@@ -16,15 +16,16 @@ const $messages = document.getElementById('messages') || undefined;
 * @param {boolean} pageLoad - If set to true scroll to the the most recent message.
 */
 const autoscroll = (pageLoad = false) => {
+    // On page load, autoscroll to the last message.
     if (pageLoad) {
         $messages.scrollTop = $messages.scrollHeight;
+        return;
     }
 
     const $newMessage = $messages.lastElementChild;
     if (!$newMessage) return;
 
     // Height of the new message.
-    const newMessageStyles = getComputedStyle($newMessage);
     const newMessageHeight = $newMessage.offsetHeight;
 
     // Visible height of messages area.
@@ -35,8 +36,8 @@ const autoscroll = (pageLoad = false) => {
 
     const scrollOffset = $messages.scrollTop + visibleHeight;
 
-    if (containerHeight - newMessageHeight <= scrollOffset) {
-        $messages.scrollTop = $messages.scrollHeight;
+    if ((containerHeight - scrollOffset) <= newMessageHeight) {
+        $messages.scrollTop = containerHeight;
     }
 };
 
