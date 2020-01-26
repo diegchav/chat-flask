@@ -3,11 +3,10 @@ import os
 import requests
 from datetime import datetime
 from dotenv import load_dotenv
-from flask import Flask, flash, g, redirect, render_template, request, session, url_for
+from flask import Flask, g, redirect, render_template, session, url_for
 from flask_moment import Moment
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import check_password_hash, generate_password_hash
 
 # Load environment variables from .env file
 load_dotenv()
@@ -29,9 +28,13 @@ def create_app():
     socketio.init_app(app)
 
     with app.app_context():
+        # Models
         from .models import User, Message
 
-        ### Routes ###
+        # Blueprints
+        from . import auth
+        app.register_blueprint(auth.bp)
+
         @app.before_request
         def load_logged_in_user():
             user_id = session.get('user_id')
@@ -46,7 +49,7 @@ def create_app():
             @functools.wraps(view)
             def wrapped_view(**kwargs):
                 if g.user is None:
-                    return redirect(url_for('login'))
+                    return redirect(url_for('auth.login'))
 
                 return view(**kwargs)
 
@@ -59,65 +62,6 @@ def create_app():
             user = g.user
             messages = [message.json() for message in Message.query.limit(50).all()]
             return render_template('index.html', username=user.username, messages=messages)
-
-        @app.route('/login', methods=['GET', 'POST'])
-        def login():
-            if request.method == 'POST':
-                username = request.form['username']
-                password = request.form['password']
-                error = None
-
-                user = User.query.filter_by(username=username).first()
-                if user and check_password_hash(user.password, password):
-                    session.clear()
-                    session['user_id'] = user.id
-
-                    return redirect(url_for('index'))
-                else:
-                    error = 'Invalid username or password'
-
-                flash(error)
-
-            if g.user:
-                return redirect(url_for('index'))
-
-            return render_template('login.html')
-
-        @app.route('/register', methods=['GET', 'POST'])
-        def register():
-            if request.method == 'POST':
-                username = request.form['username']
-                password = request.form['password']
-                confirm_password = request.form['confirm-password']
-                error = None
-
-                if not username:
-                    error = 'Username is required'
-                elif not password or not confirm_password:
-                    error = 'Password is required'
-                elif password != confirm_password:
-                    error = 'Password and Confirm Password don\'t match'
-                else:
-                    existing_user = User.query.filter_by(username=username).first()
-                    # Don't enumerate usernames
-                    if existing_user is None:
-                        new_user = User(username=username, password=generate_password_hash(password))
-                        db.session.add(new_user)
-                        db.session.commit()
-
-                    return redirect(url_for('login'))
-
-                flash(error)
-
-            if g.user:
-                return redirect(url_for('index'))
-
-            return render_template('register.html')
-
-        @app.route('/logout')
-        def logout():
-            session.clear()
-            return redirect(url_for('login'))
 
         ### WebSocket events ###
         @socketio.on('message')
