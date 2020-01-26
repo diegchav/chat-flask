@@ -103,6 +103,10 @@ p {
     padding: 0.5rem 0.8rem;
 }
 
+.message:last-child {
+    border-bottom: none;
+}
+
 .message__user {
     color: #222831;
     font-size: 0.9rem;
