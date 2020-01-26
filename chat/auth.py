@@ -20,7 +20,7 @@ def login():
             session.clear()
             session['user_id'] = user.id
 
-            return redirect(url_for('index'))
+            return redirect(url_for('chat.index'))
         else:
             error = 'Invalid username or password'
 
@@ -58,7 +58,7 @@ def register():
         flash(error)
 
     if g.user:
-        return redirect(url_for('index'))
+        return redirect(url_for('chat.index'))
 
     return render_template('auth/register.html')
 
