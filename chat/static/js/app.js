@@ -82,10 +82,14 @@ if ($sendMessage !== undefined) {
     $sendMessage.addEventListener('submit', (e) => {
         e.preventDefault();
 
+        const message = e.target.elements.message.value;
+        if (!message) {
+            $sendMessageInput.focus();
+            return;
+        };
+
         // Stock message regex.
         const stockRegex = /^(\/)([a-z]+)(=)?(.*)?$/;
-        
-        const message = e.target.elements.message.value;
         const match = message.match(stockRegex);
         if (match) {
             const command = match[2];
