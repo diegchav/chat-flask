@@ -109,5 +109,5 @@ if ($sendMessage !== undefined) {
 
 // WebSocket events.
 socket.on('message received', (message) => {
-    renderMessage({ ...message, time: moment(message.time).calendar() });
+    renderMessage({ ...message, 'timestamp': moment(message.timestamp).calendar() });
 });

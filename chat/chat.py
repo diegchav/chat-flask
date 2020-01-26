@@ -1,32 +1,63 @@
-import functools
+import json
 import requests
 from datetime import datetime
+from functools import wraps
 from flask import (
-    Blueprint, g, redirect, render_template, session, url_for
+    Blueprint, abort, g, jsonify, redirect, render_template, session, url_for
 )
+from werkzeug.exceptions import Unauthorized
 from flask_socketio import emit
 
-from . import db, socketio
-from .models import Message, User
+from . import db, moment, socketio
+from .models import Message, MessageSchema, User
 
 bp = Blueprint('chat', __name__)
 
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
+# Model schemas
+message_schema = MessageSchema()
+messages_schema = MessageSchema(many=True)
+
+# Error handlers
+@bp.errorhandler(Unauthorized)
+def handle_unauthorized(e):
+    response = e.get_response()
+    response.data = json.dumps({
+        'error': e.name,
+        'code': e.code
+    })
+    response.content_type = 'application/json'
+
+    return response
+
+# Decorators
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
         if g.user is None:
             return redirect(url_for('auth.login'))
 
-        return view(**kwargs)
+        return f(*args, **kwargs)
 
-    return wrapped_view
+    return decorated_function
+
+def auth_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if g.user is None:
+            abort(401)
+
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 @bp.route('/')
 @login_required
 def index():
     """Home page."""
     user = g.user
-    messages = [message.json() for message in Message.query.limit(50).all()]
+    messages = Message.query.limit(50).all()
+    messages = messages_schema.dump(messages)
+
     return render_template('index.html', username=user.username, messages=messages)
 
 ### WebSocket events ###
@@ -39,8 +70,11 @@ def handle_message(message):
         db.session.add(new_message)
         db.session.commit()
 
-        message_json = new_message.json()
-        message_json['time'] = new_message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+        message_json = message_schema.dump(new_message)
+        # Just keep raw string representation for using it with javascript
+        message_json['timestamp'] = message_json['timestamp_raw']
+        message_json.pop('timestamp_raw')
+
         emit('message received', message_json, broadcast=True)
 
 @socketio.on('stock message')

@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask, g, session
+from flask_marshmallow import Marshmallow
 from flask_moment import Moment
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
@@ -9,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 load_dotenv()
 
 db = SQLAlchemy()
+ma = Marshmallow()
 moment = Moment()
 socketio = SocketIO()
 
@@ -19,6 +21,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
+    ma.init_app(app)
     moment.init_app(app)
     socketio.init_app(app)
 

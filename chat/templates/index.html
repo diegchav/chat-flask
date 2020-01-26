@@ -18,9 +18,9 @@
                     <div class="message">
                         <p>
                             <span class="message__user">{{message.user}}</span>
-                            <span class="message__time">{{message.time}}</span>
+                            <span class="message__time">{{message.timestamp}}</span>
                         </p>
-                        <p class="message__text">{{message.text}}</p>
+                        <p class="message__text">{{message.message}}</p>
                     </div>
                 {% endfor %}
             </div>
@@ -44,9 +44,9 @@
             {% raw %}
             <p>
                 <span class="message__user">{{user}}</span>
-                <span class="message__time">{{time}}</span>
+                <span class="message__time">{{timestamp}}</span>
             </p>
-            <p class="message__text">{{text}}</p>
+            <p class="message__text">{{message}}</p>
             {% endraw %}
         </div>
     </script>
