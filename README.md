@@ -4,8 +4,8 @@ Simple chat application using flask-socketio
 
 ## Requirements
 
-- Python 3.7.5+
-- PostgreSQL 11.5+
+- Python 3.3+
+- PostgreSQL 11+
 
 ## Setup project
 
@@ -37,18 +37,16 @@ Set environment variables (use example.env as a template):
 cp example.env .env
 ```
 
-SECRET_KEY can have any value
-
-Create db schemas:
+Source environment variables
 
 ```
-python -c "from chat import app; app.db.create_all()"
+. .env
 ```
 
 Run application:
 
 ```
-python chat/app.py
+python run.py
 ```
 
 App should be running on port 5000 :)
