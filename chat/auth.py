@@ -13,7 +13,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        error = None
+        message = None
 
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
@@ -22,9 +22,9 @@ def login():
 
             return redirect(url_for('chat.index'))
         else:
-            error = 'Invalid username or password'
+            message = { 'text': 'Invalid username or password', 'type': 'danger' }
 
-        flash(error)
+        flash(message)
 
     if g.user:
         return redirect(url_for('index'))
@@ -37,25 +37,28 @@ def register():
         username = request.form['username']
         password = request.form['password']
         confirm_password = request.form['confirm-password']
-        error = None
+        message = None
 
         if not username:
-            error = 'Username is required'
+            message = { 'text': 'Username is required', 'type': 'danger' }
         elif not password or not confirm_password:
-            error = 'Password is required'
+            message = { 'text': 'Password is required', 'type': 'danger' }
         elif password != confirm_password:
-            error = 'Password and Confirm Password don\'t match'
+            message = { 'text': 'Password and Confirm Password don\'t match', 'type': 'danger' }
         else:
             existing_user = User.query.filter_by(username=username).first()
-            # Don't enumerate usernames
+            # Don't let the user that the username already exists to prevent user enumeration
             if existing_user is None:
                 new_user = User(username=username, password=generate_password_hash(password))
                 db.session.add(new_user)
                 db.session.commit()
 
+                message = { 'text': 'Account successfully created', 'type': 'success' }
+                flash(message)
+
             return redirect(url_for('auth.login'))
 
-        flash(error)
+        flash(message)
 
     if g.user:
         return redirect(url_for('chat.index'))
