@@ -25,7 +25,7 @@
                 {% for message in messages %}
                     <div class="message">
                         <p>
-                            <span class="message__user">{{message.user}}</span>
+                            <span class="message__user">@{{message.user}}</span>
                             <span class="message__time">{{message.timestamp}}</span>
                         </p>
                         <p class="message__text">{{message.message}}</p>
@@ -51,7 +51,7 @@
         <div class="message">
             {% raw %}
             <p>
-                <span class="message__user">{{user}}</span>
+                <span class="message__user">@{{user}}</span>
                 <span class="message__time">{{timestamp}}</span>
             </p>
             <p class="message__text">{{message}}</p>
