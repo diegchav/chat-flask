@@ -47,31 +47,6 @@ p {
 
 .chat-sidebar {
     width: 15%;
-    padding: 1rem 1.5rem;
-}
-
-.chat-sidebar__menu {
-    display: flex;
-    align-items: center;
-    padding: 0 0.5rem;
-}
-
-.chat-username {
-    padding: 0;
-    margin: 0;
-    flex-grow: 1;
-    font-size: 1.7rem;
-}
-
-.chat-logout {
-    font-size: 0.7rem;
-    flex-shrink: 0;
-}
-
-.chat-logout a {
-    padding: 0;
-    margin: 0;
-
 }
 
 .chat-area {
