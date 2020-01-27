@@ -46,7 +46,7 @@ Source environment variables
 Run application:
 
 ```
-python run.py
+gunicorn -c "python:config.gunicorn" "chat:create_app()"
 ```
 
-App should be running on port 5000 :)
+App should be running on port 8000 :)
