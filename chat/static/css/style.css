@@ -37,7 +37,7 @@ p {
     justify-content: center;
 }
 
-.errors {
+.flash-messages {
     display: flex;
     align-items: center;
     justify-content: center;
