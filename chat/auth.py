@@ -13,7 +13,6 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        message = None
 
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
@@ -22,9 +21,7 @@ def login():
 
             return redirect(url_for('chat.index'))
         else:
-            message = { 'text': 'Invalid username or password', 'type': 'danger' }
-
-        flash(message)
+            flash('Invalid username or password', 'danger')
 
     if g.user:
         return redirect(url_for('index'))
@@ -37,14 +34,13 @@ def register():
         username = request.form['username']
         password = request.form['password']
         confirm_password = request.form['confirm-password']
-        message = None
 
         if not username:
-            message = { 'text': 'Username is required', 'type': 'danger' }
+            flash('Username is required', 'danger')
         elif not password or not confirm_password:
-            message = { 'text': 'Password is required', 'type': 'danger' }
+            flash('Password is required', 'danger')
         elif password != confirm_password:
-            message = { 'text': 'Password and Confirm Password don\'t match', 'type': 'danger' }
+            flash('Passwords don\'t match', 'danger')
         else:
             existing_user = User.query.filter_by(username=username).first()
             # Don't let the user that the username already exists to prevent user enumeration
@@ -53,12 +49,9 @@ def register():
                 db.session.add(new_user)
                 db.session.commit()
 
-                message = { 'text': 'Account successfully created', 'type': 'success' }
-                flash(message)
+                flash('Account successfully created', 'success')
 
             return redirect(url_for('auth.login'))
-
-        flash(message)
 
     if g.user:
         return redirect(url_for('chat.index'))
