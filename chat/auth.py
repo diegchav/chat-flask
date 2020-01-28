@@ -4,15 +4,17 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import db
+from .forms import LoginForm
 from .models import User
 
 bp = Blueprint('auth', __name__)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
 
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
@@ -26,7 +28,7 @@ def login():
     if g.user:
         return redirect(url_for('index'))
 
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', form=form)
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():

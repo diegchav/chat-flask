@@ -22,6 +22,12 @@ p {
     padding: 0;
 }
 
+/* Forms */
+.form-error {
+    color: #dc3545;
+    font-size: 0.8rem;
+}
+
 /* Main content */
 .content {
     width: 100vw;
@@ -107,7 +113,7 @@ p {
 }
 
 /* Login */
-#login {
+#login h1 {
     text-align: center;
 }
 
