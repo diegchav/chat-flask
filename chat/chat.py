@@ -55,8 +55,10 @@ def auth_required(f):
 def index():
     """Home page."""
     user = g.user
-    messages = Message.query.limit(50).all()
+    # Get 50 newest messages
+    messages = Message.query.order_by(Message.timestamp.desc()).limit(50).all()
     messages = messages_schema.dump(messages)
+    messages.reverse()
 
     return render_template('index.html', username=user.username, messages=messages)
 
