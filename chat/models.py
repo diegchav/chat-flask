@@ -34,7 +34,7 @@ class Message(db.Model):
     def __init__(self, message, user_id):
         self.message = message.strip()
         self.user_id = user_id
-        self.timestamp = datetime.now()
+        self.timestamp = datetime.utcnow()
 
     def __repr__(self):
         return '<Message {}>'.format(self.message)

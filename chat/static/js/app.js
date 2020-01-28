@@ -114,5 +114,6 @@ if ($sendMessage !== undefined) {
 
 // WebSocket events.
 socket.on('message received', (message) => {
-    renderMessage({ ...message, 'timestamp': moment(message.timestamp).calendar() });
+    console.log(message);
+    renderMessage({ ...message, 'timestamp': moment.utc(message.timestamp).local().calendar() });
 });
