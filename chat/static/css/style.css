@@ -23,6 +23,14 @@ p {
 }
 
 /* Forms */
+form h1 {
+    text-align: center;
+}
+
+form > .form-group {
+    margin: 1rem 0;
+}
+
 .form-error {
     color: #dc3545;
     font-size: 0.8rem;
@@ -113,14 +121,6 @@ p {
 }
 
 /* Login */
-#login h1 {
-    text-align: center;
-}
-
-#login .form-group {
-    margin: 1rem 0;
-}
-
 .register-link {
     font-size: 0.8rem;
 }
