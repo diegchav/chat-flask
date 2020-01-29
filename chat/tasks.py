@@ -1,8 +1,10 @@
 import requests
 from datetime import datetime
 
-from .extensions import celery
+from . import make_celery
 from .utils import is_float
+
+celery = make_celery()
 
 @celery.task()
 def quote_stock(stock_code):

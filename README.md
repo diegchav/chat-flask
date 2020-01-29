@@ -47,7 +47,7 @@ Source environment variables
 Run celery worker (task queue)
 
 ```
-celery worker -A worker.celery --loglevel INFO
+celery worker -A chat.tasks --loglevel INFO
 ```
 
 Run application:

@@ -9,7 +9,6 @@ from flask_socketio import emit
 
 from .extensions import db, moment, socketio
 from .models import Message, MessageSchema, User
-from .tasks import quote_stock
 
 bp = Blueprint('chat', __name__)
 
@@ -81,5 +80,7 @@ def handle_message(message):
 
 @socketio.on('stock message')
 def handle_stock_message(message):
+    from .tasks import quote_stock
+
     task = quote_stock.delay(message)
     print('Processing stock message: {}'.format(task))
