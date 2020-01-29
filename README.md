@@ -6,6 +6,7 @@ Simple chat application using flask-socketio
 
 - Python 3.3+
 - PostgreSQL 11+
+- Redis 5+
 
 ## Setup project
 
@@ -41,6 +42,12 @@ Source environment variables
 
 ```
 . .env
+```
+
+Run celery worker (task queue)
+
+```
+celery worker -A worker.celery --loglevel INFO
 ```
 
 Run application:

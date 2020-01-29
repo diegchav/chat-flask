@@ -14,3 +14,6 @@ venv
 
 # Env files
 .env
+
+# Redis files
+*.rdb
