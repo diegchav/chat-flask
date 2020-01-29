@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from . import db, ma, moment
+from .extensions import db, ma, moment
 
 class User(db.Model):
     __tablename__ = 'users'

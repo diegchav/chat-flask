@@ -3,7 +3,7 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from . import db
+from .extensions import db
 from .forms import LoginForm, RegisterForm
 from .models import User
 

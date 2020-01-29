@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime
 
-from . import celery
+from .extensions import celery
 
 def is_float(num):
     if isinstance(num, str):

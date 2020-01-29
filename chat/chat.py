@@ -7,7 +7,7 @@ from flask import (
 from werkzeug.exceptions import Unauthorized
 from flask_socketio import emit
 
-from . import db, moment, socketio
+from .extensions import db, moment, socketio
 from .models import Message, MessageSchema, User
 from .tasks import quote_stock
 
