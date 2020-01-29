@@ -2,16 +2,7 @@ import requests
 from datetime import datetime
 
 from .extensions import celery
-
-def is_float(num):
-    if isinstance(num, str):
-        try:
-            f = float(num)
-            return True
-        except ValueError:
-            return False
-
-    return False
+from .utils import is_float
 
 @celery.task()
 def quote_stock(stock_code):
