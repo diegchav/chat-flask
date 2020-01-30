@@ -26,7 +26,7 @@ def login():
             flash('Invalid username or password', 'danger')
 
     if g.user:
-        return redirect(url_for('index'))
+        return redirect(url_for('chat.index'))
 
     return render_template('auth/login.html', form=form)
 
