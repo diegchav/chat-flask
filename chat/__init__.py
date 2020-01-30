@@ -13,8 +13,9 @@ from .extensions import (
 )
 from .models import *
 
-def make_celery(app=None):
-    app = app or create_app()
+def make_celery():
+    app = Flask(__name__)
+    app.config.from_object(os.environ['APP_SETTINGS'])
 
     celery = Celery(
         app.import_name,
@@ -43,7 +44,7 @@ def create_app():
     ma.init_app(app)
     migrate.init_app(app, db)
     moment.init_app(app)
-    socketio.init_app(app)
+    socketio.init_app(app, message_queue=os.environ['MESSAGE_QUEUE'])
 
     # Register blueprints
     app.register_blueprint(auth.bp)

@@ -32,6 +32,8 @@ pip install -r requirements.txt
 
 ## Run project
 
+Make sure postgres and redis are running.
+
 Set environment variables (use example.env as a template):
 
 ```
