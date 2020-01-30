@@ -3,7 +3,7 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from . import db
+from .extensions import db
 from .forms import LoginForm, RegisterForm
 from .models import User
 
@@ -26,7 +26,7 @@ def login():
             flash('Invalid username or password', 'danger')
 
     if g.user:
-        return redirect(url_for('index'))
+        return redirect(url_for('chat.index'))
 
     return render_template('auth/login.html', form=form)
 

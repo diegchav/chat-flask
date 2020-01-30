@@ -1,5 +1,4 @@
 import json
-import requests
 from datetime import datetime
 from functools import wraps
 from flask import (
@@ -8,7 +7,7 @@ from flask import (
 from werkzeug.exceptions import Unauthorized
 from flask_socketio import emit
 
-from . import db, moment, socketio
+from .extensions import db, moment, socketio
 from .models import Message, MessageSchema, User
 
 bp = Blueprint('chat', __name__)
@@ -80,19 +79,8 @@ def handle_message(message):
         emit('message received', message_json, broadcast=True)
 
 @socketio.on('stock message')
-def handle_stock_message(stock_code):
-    stock_url = 'https://stooq.com/q/l/?s={}&f=sd2t2ohlcv&h&e=csv'.format(stock_code.strip().lower())
-    r = requests.get(stock_url)
+def handle_stock_message(message):
+    from .tasks import quote_stock
 
-    # Parse csv response
-    csv_text = r.text
-    csv_rows = csv_text.splitlines()
-    csv_values = csv_rows[1].split(',')
-    stock_symbol = csv_values[0]
-    stock_close = csv_values[6]
-
-    if is_float(stock_close):
-        message_text = '{} quote is ${} per share.'.format(stock_symbol, stock_close)
-        message_user = 'Bot'
-        message_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        emit('message received', { 'text': message_text, 'user': message_user, 'time': message_time }, broadcast=True)
+    task = quote_stock.delay(message)
+    print('Processing stock message: {}'.format(task))
