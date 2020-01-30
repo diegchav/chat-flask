@@ -7,10 +7,11 @@ from . import auth, chat
 from .extensions import (
     db,
     ma,
+    migrate,
     moment,
     socketio
 )
-from .models import User
+from .models import *
 
 def make_celery(app=None):
     app = app or create_app()
@@ -36,30 +37,26 @@ def create_app():
 
     app = Flask(__name__)
     app.config.from_object(os.environ['APP_SETTINGS'])
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    with app.app_context():
-        # Init extensions
-        db.init_app(app)
-        ma.init_app(app)
-        moment.init_app(app)
-        socketio.init_app(app)
+    # Init extensions
+    db.init_app(app)
+    ma.init_app(app)
+    migrate.init_app(app, db)
+    moment.init_app(app)
+    socketio.init_app(app)
 
-        # Register blueprints
-        app.register_blueprint(auth.bp)
-        app.register_blueprint(chat.bp)
+    # Register blueprints
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(chat.bp)
 
-        @app.before_request
-        def load_logged_in_user():
-            user_id = session.get('user_id')
+    @app.before_request
+    def load_logged_in_user():
+        user_id = session.get('user_id')
 
-            if user_id is None:
-                g.user = None
-            else:
-                user = User.query.filter_by(id=user_id).first()
-                g.user = user
-
-        # Create db models
-        db.create_all()
+        if user_id is None:
+            g.user = None
+        else:
+            user = User.query.filter_by(id=user_id).first()
+            g.user = user
 
     return app
