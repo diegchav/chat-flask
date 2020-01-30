@@ -1,17 +1,17 @@
 import os
 from celery import Celery
 from dotenv import load_dotenv
-from flask import Flask, g, session
+from flask import Flask
 
 from . import auth, chat
 from .extensions import (
     db,
+    login,
     ma,
     migrate,
     moment,
     socketio
 )
-from .models import *
 
 def make_celery():
     app = Flask(__name__)
@@ -41,6 +41,8 @@ def create_app():
 
     # Init extensions
     db.init_app(app)
+    login.init_app(app)
+    login.login_view = 'auth.login'
     ma.init_app(app)
     migrate.init_app(app, db)
     moment.init_app(app)
@@ -49,15 +51,5 @@ def create_app():
     # Register blueprints
     app.register_blueprint(auth.bp)
     app.register_blueprint(chat.bp)
-
-    @app.before_request
-    def load_logged_in_user():
-        user_id = session.get('user_id')
-
-        if user_id is None:
-            g.user = None
-        else:
-            user = User.query.filter_by(id=user_id).first()
-            g.user = user
 
     return app
