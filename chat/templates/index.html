@@ -24,9 +24,9 @@
             <div id="messages" class="chat-area__messages">
                 {% for message in messages %}
                     <div class="message">
-                        <p>
-                            <span class="message__user">@{{message.user}}</span>
-                            <span class="message__time">{{message.timestamp}}</span>
+                        <p class="message__meta">
+                            <span class="message__meta-user">@{{message.user}}</span>
+                            <span class="message__meta-time">{{message.timestamp}}</span>
                         </p>
                         <p class="message__text">{{message.message}}</p>
                     </div>
@@ -50,9 +50,9 @@
     <script id="message-template" type="text/html">
         <div class="message">
             {% raw %}
-            <p>
-                <span class="message__user">@{{user}}</span>
-                <span class="message__time">{{timestamp}}</span>
+            <p class="message__meta">
+                <span class="message__meta-user">@{{user}}</span>
+                <span class="message__meta-time">{{timestamp}}</span>
             </p>
             <p class="message__text">{{message}}</p>
             {% endraw %}
