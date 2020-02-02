@@ -4,6 +4,7 @@ from datetime import datetime
 from flask_socketio import SocketIO
 
 from . import make_celery
+from .constants import BOT_USER
 from .utils import is_float
 
 celery = make_celery()
@@ -26,8 +27,7 @@ def quote_stock(stock_code, namespace, room):
     else:
         message_text = 'Invalid stock code: {}'.format(stock_code)
 
-    message_user = 'Bot'
     message_time = str(datetime.utcnow())
-    message = { 'message': message_text, 'user': message_user, 'timestamp': message_time }
+    message = { 'message': message_text, 'user': BOT_USER, 'timestamp': message_time }
 
     socketio.emit('message received', message, namespace=namespace, room=room)
