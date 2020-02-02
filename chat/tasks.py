@@ -30,4 +30,4 @@ def quote_stock(stock_code, namespace, room):
     message_time = str(datetime.utcnow())
     message = { 'message': message_text, 'user': BOT_USER, 'timestamp': message_time }
 
-    socketio.emit('message received', message, namespace=namespace, room=room)
+    socketio.emit('stock message received', message, namespace=namespace, room=room)

@@ -78,6 +78,15 @@ const sendStockMessage = (message) => {
     socket.emit('stock message', message);
 };
 
+/*
+* Get the calendar format of a timestamp.
+* @param {string} timestamp - Timestamp to turn into calendar format.
+*/
+const getCalendarTimestamp = timestamp => {
+    const calendarTimestamp = moment.utc(timestamp).local().calendar();
+    return calendarTimestamp;
+};
+
 // Listeners.
 if ($sendMessage !== undefined) {
     $sendMessage.addEventListener('submit', (e) => {
@@ -115,5 +124,11 @@ if ($sendMessage !== undefined) {
 
 // WebSocket events.
 socket.on('message received', (message) => {
-    renderMessage({ ...message, 'timestamp': moment.utc(message.timestamp).local().calendar() });
+    const timestamp = getCalendarTimestamp(message.timestamp);
+    renderMessage({ ...message, timestamp, type: '' });
+});
+
+socket.on('stock message received', (message) => {
+    const timestamp = getCalendarTimestamp(message.timestamp);
+    renderMessage({ ...message, timestamp, type: 'bot' });
 });

@@ -9,7 +9,7 @@
 
 body {
     box-sizing: border-box;
-    background-color: #ddd;
+    background-color: #ccc;
 }
 
 /* Bootstrap overriden styles */
@@ -81,12 +81,12 @@ form > .form-group {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #eee;
+    background-color: #ddd;
 }
 
 .message {
     height: 100px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #ddd;
     padding: 1rem 1.5rem;
     display: flex;
     flex-direction: column;
@@ -94,6 +94,10 @@ form > .form-group {
 
 .message:last-child {
     border-bottom: none;
+}
+
+.message.bot {
+    background-color: #eee;
 }
 
 .message__meta {
