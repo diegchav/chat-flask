@@ -1,0 +1,2 @@
+### SocketIO ###
+NAMESPACE = '/chat'

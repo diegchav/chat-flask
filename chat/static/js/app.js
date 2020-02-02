@@ -1,5 +1,6 @@
 // Connect to web socket.
-const hostname = `${window.location.protocol}//${document.domain}:${window.location.port}`;
+const namespace = 'chat';
+const hostname = `${window.location.protocol}//${document.domain}:${window.location.port}/${namespace}`;
 const socket = io.connect(hostname);
 
 // DOM elements.

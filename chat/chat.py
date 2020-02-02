@@ -2,6 +2,7 @@ from flask import Blueprint, render_template
 from flask_login import current_user, login_required
 from flask_socketio import emit
 
+from .constants import NAMESPACE
 from .extensions import db, socketio
 from .models import Message, MessageSchema
 
@@ -23,7 +24,7 @@ def index():
     return render_template('index.html', messages=messages)
 
 ### WebSocket events ###
-@socketio.on('message')
+@socketio.on('message', namespace=NAMESPACE)
 def handle_message(message):
     if current_user.is_authenticated:
         user = current_user
@@ -38,7 +39,7 @@ def handle_message(message):
 
         emit('message received', message_json, broadcast=True)
 
-@socketio.on('stock message')
+@socketio.on('stock message', namespace=NAMESPACE)
 def handle_stock_message(message):
     from .tasks import quote_stock
-    quote_stock.delay(message)
+    quote_stock.delay(message, NAMESPACE)
