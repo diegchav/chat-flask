@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from flask_login import current_user, login_required
 from flask_socketio import emit
 
@@ -42,4 +42,5 @@ def handle_message(message):
 @socketio.on('stock message', namespace=NAMESPACE)
 def handle_stock_message(message):
     from .tasks import quote_stock
-    quote_stock.delay(message, NAMESPACE)
+    room = request.sid
+    quote_stock.delay(message, NAMESPACE, room)

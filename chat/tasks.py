@@ -10,7 +10,7 @@ celery = make_celery()
 socketio = SocketIO(message_queue=os.environ['MESSAGE_QUEUE'])
 
 @celery.task()
-def quote_stock(stock_code, namespace):
+def quote_stock(stock_code, namespace, room):
     stock_url = 'https://stooq.com/q/l/?s={}&f=sd2t2ohlcv&h&e=csv'.format(stock_code.strip().lower())
     r = requests.get(stock_url)
 
@@ -30,4 +30,4 @@ def quote_stock(stock_code, namespace):
     message_time = str(datetime.utcnow())
     message = { 'message': message_text, 'user': message_user, 'timestamp': message_time }
 
-    socketio.emit('message received', message, namespace=namespace, broadcast=True)
+    socketio.emit('message received', message, namespace=namespace, room=room)
